@@ -68,4 +68,4 @@ Sessions live in the API process. Restarting the API clears them.
 uv run pytest
 ```
 
-`tests/test_search_tools.py` calls the live search provider.
+
