@@ -1,5 +1,4 @@
 import json
-from typing import Any
 
 from business_research_ai.agents.synthesis_agent import (
     synthesis_agent,
@@ -7,35 +6,7 @@ from business_research_ai.agents.synthesis_agent import (
 from business_research_ai.schemas.synthesis import (
     SynthesizedResearch,
 )
-
-
-def extract_text_content(content: Any) -> str:
-
-    if isinstance(content, str):
-        return content
-
-    if isinstance(content, list):
-
-        parts = []
-
-        for block in content:
-
-            if isinstance(block, dict):
-
-                if block.get("type") == "text":
-
-                    text = block.get("text")
-
-                    if text:
-                        parts.append(text)
-
-            elif isinstance(block, str):
-
-                parts.append(block)
-
-        return "\n".join(parts)
-
-    return str(content)
+from business_research_ai.utils.text import extract_text_content
 
 
 def synthesize_research(

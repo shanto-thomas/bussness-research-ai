@@ -3,7 +3,7 @@ import json
 from business_research_ai.agents.report_agent import report_agent
 from business_research_ai.schemas.report import BusinessResearchReport
 from business_research_ai.schemas.synthesis import SynthesizedResearch
-from business_research_ai.services.synthesis_service import extract_text_content
+from business_research_ai.utils.text import extract_text_content
 
 
 def generate_report(

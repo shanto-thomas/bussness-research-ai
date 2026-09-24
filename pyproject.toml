@@ -17,14 +17,10 @@ dependencies = [
     "pydantic>=2.13.5",
     "pydantic-settings>=2.15.0",
     "python-dotenv>=1.2.3",
-    "ragas>=0.4.3",
     "reportlab>=5.0.1",
     "streamlit>=1.64.0",
     "uvicorn[standard]>=0.53.0",
 ]
-
-[project.scripts]
-business-research-ai = "business_research_ai:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/business_research_ai"]

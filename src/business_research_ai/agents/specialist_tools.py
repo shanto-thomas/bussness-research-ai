@@ -1,5 +1,3 @@
-from typing import Any
-
 from langchain.tools import tool
 
 from business_research_ai.agents.specialists import (
@@ -11,31 +9,7 @@ from business_research_ai.agents.specialists import (
     pricing_agent,
     technology_agent,
 )
-
-
-def extract_agent_text(content: Any) -> str:
-    """Extract text from LangChain/OpenAI response content."""
-
-    if isinstance(content, str):
-        return content
-
-    if isinstance(content, list):
-        parts: list[str] = []
-
-        for block in content:
-            if isinstance(block, dict):
-                if block.get("type") == "text":
-                    text = block.get("text")
-
-                    if text:
-                        parts.append(text)
-
-            elif isinstance(block, str):
-                parts.append(block)
-
-        return "\n".join(parts)
-
-    return str(content)
+from business_research_ai.utils.text import extract_text_content
 
 
 def invoke_agent(agent, business_idea: str) -> str:
@@ -52,7 +26,7 @@ def invoke_agent(agent, business_idea: str) -> str:
 
     final_message = result["messages"][-1]
 
-    return extract_agent_text(
+    return extract_text_content(
         final_message.content
     )
 

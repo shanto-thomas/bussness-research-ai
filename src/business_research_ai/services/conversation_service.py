@@ -1,5 +1,4 @@
 import json
-from typing import Any
 
 from business_research_ai.agents.research_router import (
     research_router,
@@ -21,35 +20,7 @@ from business_research_ai.services.report_service import (
 from business_research_ai.services.pdf_service import (
     generate_pdf,
 )
-
-
-def extract_text(content: Any) -> str:
-
-    if isinstance(content, str):
-        return content
-
-    if isinstance(content, list):
-
-        parts = []
-
-        for block in content:
-
-            if isinstance(block, dict):
-
-                if block.get("type") == "text":
-
-                    text = block.get("text")
-
-                    if text:
-                        parts.append(text)
-
-            elif isinstance(block, str):
-
-                parts.append(block)
-
-        return "\n".join(parts)
-
-    return str(content)
+from business_research_ai.utils.text import extract_text_content
 
 
 def classify_intent(
@@ -69,7 +40,7 @@ def classify_intent(
 
     final_message = result["messages"][-1]
 
-    text = extract_text(
+    text = extract_text_content(
         final_message.content
     )
 

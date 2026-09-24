@@ -9,8 +9,8 @@ from business_research_ai.schemas.research import (
 
 from business_research_ai.services.synthesis_service import (
     synthesize_research,
-    extract_text_content,
 )
+from business_research_ai.utils.text import extract_text_content
 
 from business_research_ai.services.report_service import (
     generate_report,
