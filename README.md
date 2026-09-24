@@ -53,7 +53,7 @@ The UI calls `http://127.0.0.1:8000` unless you set `API_BASE_URL`.
 1. `POST /api/v1/research/session` creates an in-memory session.
 2. The first `POST /api/v1/research/session/{session_id}/message` stores the business idea.
 3. Later messages are classified as one area, all remaining areas, or report generation.
-4. Each area runs its specialist agent. Search tools are limited to 5 calls per tool, and the model is limited to 8 calls per run. Failed searches are retried twice.
+4. Each area runs its specialist agent. Search tools are limited to 5 calls per tool, and the model is limited to 8 calls per run. Failed searches are retried twice. Once a specialist conversation passes about 6,000 tokens, older messages are summarized and the latest 6 messages are kept.
 5. Report generation writes the synthesis, the report, and `generated_reports/{session_id}.pdf`.
 
 Sessions live in the API process. Restarting the API clears them.

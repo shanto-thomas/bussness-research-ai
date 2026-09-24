@@ -1,16 +1,16 @@
 from langchain.agents.middleware import (
-    ContextEditingMiddleware,
     ModelCallLimitMiddleware,
+    SummarizationMiddleware,
     ToolCallLimitMiddleware,
     ToolRetryMiddleware,
 )
 
 from business_research_ai.agents.specialist_middleware import (
-    CONTEXT_TOKEN_TRIGGER,
-    CONTEXT_TOOL_RESULTS_TO_KEEP,
     RUN_MODEL_CALL_LIMIT,
     RUN_TOOL_CALL_LIMIT,
     SEARCH_TOOLS,
+    SUMMARY_MESSAGES_TO_KEEP,
+    SUMMARY_TOKEN_TRIGGER,
     TOOL_MAX_RETRIES,
     build_specialist_middleware,
 )
@@ -22,7 +22,7 @@ def test_specialist_middleware_limits_search_tools():
     model_limit = middleware[0]
     tool_limits = middleware[1 : 1 + len(SEARCH_TOOLS)]
     retry = middleware[-2]
-    context = middleware[-1]
+    summarizer = middleware[-1]
 
     assert isinstance(model_limit, ModelCallLimitMiddleware)
     assert model_limit.run_limit == RUN_MODEL_CALL_LIMIT
@@ -42,7 +42,6 @@ def test_specialist_middleware_limits_search_tools():
     assert retry._tool_filter == list(SEARCH_TOOLS)
     assert retry.on_failure == "continue"
 
-    assert isinstance(context, ContextEditingMiddleware)
-    edit = context.edits[0]
-    assert edit.trigger == CONTEXT_TOKEN_TRIGGER
-    assert edit.keep == CONTEXT_TOOL_RESULTS_TO_KEEP
+    assert isinstance(summarizer, SummarizationMiddleware)
+    assert summarizer.trigger == ("tokens", SUMMARY_TOKEN_TRIGGER)
+    assert summarizer.keep == ("messages", SUMMARY_MESSAGES_TO_KEEP)

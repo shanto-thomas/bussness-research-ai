@@ -1,11 +1,12 @@
 from langchain.agents.middleware import (
     AgentMiddleware,
-    ClearToolUsesEdit,
-    ContextEditingMiddleware,
     ModelCallLimitMiddleware,
+    SummarizationMiddleware,
     ToolCallLimitMiddleware,
     ToolRetryMiddleware,
 )
+
+from business_research_ai.llm.openai import get_openai_model
 
 SEARCH_TOOLS = (
     "web_search",
@@ -17,8 +18,8 @@ SEARCH_TOOLS = (
 RUN_MODEL_CALL_LIMIT = 8
 RUN_TOOL_CALL_LIMIT = 5
 TOOL_MAX_RETRIES = 2
-CONTEXT_TOKEN_TRIGGER = 8000
-CONTEXT_TOOL_RESULTS_TO_KEEP = 2
+SUMMARY_TOKEN_TRIGGER = 6000
+SUMMARY_MESSAGES_TO_KEEP = 6
 
 
 def build_specialist_middleware() -> list[AgentMiddleware]:
@@ -26,7 +27,8 @@ def build_specialist_middleware() -> list[AgentMiddleware]:
     Middleware for research specialists that call search and page tools.
 
     Limits apply to a single agent run. Failed search tools are retried, then
-    the error is returned to the model so the run can continue.
+    the error is returned to the model so the run can continue. Long histories
+    are summarized before the next model call.
     """
 
     tool_limits = [
@@ -49,12 +51,9 @@ def build_specialist_middleware() -> list[AgentMiddleware]:
             tools=list(SEARCH_TOOLS),
             on_failure="continue",
         ),
-        ContextEditingMiddleware(
-            edits=[
-                ClearToolUsesEdit(
-                    trigger=CONTEXT_TOKEN_TRIGGER,
-                    keep=CONTEXT_TOOL_RESULTS_TO_KEEP,
-                )
-            ],
+        SummarizationMiddleware(
+            get_openai_model(),
+            trigger=("tokens", SUMMARY_TOKEN_TRIGGER),
+            keep=("messages", SUMMARY_MESSAGES_TO_KEEP),
         ),
     ]
